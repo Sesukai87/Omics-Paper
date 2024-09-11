@@ -3,26 +3,26 @@ library(hdf5r)
 library(Seurat)
 library(scCustomize)
 
-Donor <-as.data.frame(h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/Donor", ))
-Age <-as.data.frame(h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/Age", ))
-Tissue <-as.data.frame(h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/Tissue", ))
+Donor <-as.data.frame(h5read("~/HumanFetalBrainPool.h5", "/shoji/Donor", ))
+Age <-as.data.frame(h5read("~/HumanFetalBrainPool.h5", "/shoji/Age", ))
+Tissue <-as.data.frame(h5read("~/HumanFetalBrainPool.h5", "/shoji/Tissue", ))
 
-a <- as.numeric(rownames(subset(Age, `h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/Age", ` == "5.5")))
-b <- as.numeric(rownames(subset(Tissue, `h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/Tissue", ` == "Forebrain")))
+a <- as.numeric(rownames(subset(Age, `h5read("~/HumanFetalBrainPool.h5", "/shoji/Age", ` == "5.5")))
+b <- as.numeric(rownames(subset(Tissue, `h5read("~/HumanFetalBrainPool.h5", "/shoji/Tissue", ` == "Forebrain")))
 c <- intersect(a, b)
 
-Gene <-as.data.frame(h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/Gene", ))
-Gene$Gene <- Gene$`h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/Gene", `
-Gene$`h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/Gene", ` <- NULL
-cnts_GW7.5 <- as.data.frame(h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/Expression", index = list(1:59480, c)))
+Gene <-as.data.frame(h5read("~/HumanFetalBrainPool.h5", "/shoji/Gene", ))
+Gene$Gene <- Gene$`h5read("~/HumanFetalBrainPool.h5", "/shoji/Gene", `
+Gene$`h5read("~/HumanFetalBrainPool.h5", "/shoji/Gene", ` <- NULL
+cnts_GW7.5 <- as.data.frame(h5read("~/HumanFetalBrainPool.h5", "/shoji/Expression", index = list(1:59480, c)))
 cnts_GW7.5$Gene <- Gene$Gene
 cnts_GW7.5 <- as.data.frame(cnts_GW7.5[!duplicated(cnts_GW7.5$Gene),])
 rownames(cnts_GW7.5) <- cnts_GW7.5$Gene
 cnts_GW7.5$Gene <- NULL
 
-CellID <-as.data.frame(h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/CellID", ))
-CellID$CellID <- CellID$`h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/CellID", `
-CellID$`h5read("D:/Seth/Downloads/HumanFetalBrainPool.h5", "/shoji/CellID", ` <- NULL
+CellID <-as.data.frame(h5read("~/HumanFetalBrainPool.h5", "/shoji/CellID", ))
+CellID$CellID <- CellID$`h5read("~/HumanFetalBrainPool.h5", "/shoji/CellID", `
+CellID$`h5read("~/HumanFetalBrainPool.h5", "/shoji/CellID", ` <- NULL
 CellID <- as.data.frame(CellID[c,])
 CellID$keep <- lapply(strsplit(as.character(CellID$CellID), ":"), "[", 2)
 colnames(cnts_GW7.5) <- CellID$keep
@@ -52,11 +52,11 @@ GW7.5_forebrain$Celltype <- Idents(GW7.5_forebrain)
 
 #DEG Lists
 cell_type_markers <- FindAllMarkers(GW7.5_forebrain, only.pos = TRUE, logfc.threshold = 0.4)
-write.csv(cell_type_markers, "D:/Seth/Downloads/Gw7.5_forebrain_celltypes.csv")
+write.csv(cell_type_markers, "~/Gw7.5_forebrain_celltypes.csv")
 
 
 #Make Pseudobulk Object
 GW7.5_forebrain <- SetIdent(GW14_Cortex, value = "Celltype")
 Pial_Cells <- subset(GW7.5_forebrain, idents = c("Vascular Cell", "Fibroblast"))
 aggregate.Pial_Cells <- as.data.frame(AggregateExpression(Pial_Cells, assays = "RNA", slot = 'counts', group.by = "orig.ident"))
-write.csv(aggregate.Pial_Cells, "D:/Seth/Downloads/GW7.5_forebrain_Pial_Cells.psuedobulk.csv")
+write.csv(aggregate.Pial_Cells, "~/GW7.5_forebrain_Pial_Cells.psuedobulk.csv")
