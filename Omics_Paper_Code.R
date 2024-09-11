@@ -51,7 +51,7 @@ GW7.5_forebrain$Celltype <- Idents(GW7.5_forebrain)
 
 
 #DEG Lists
-cell_type_markers <- FindAllMarkers(GW7.5_forebrain, only.pos = TRUE, logfc.threshold = 0.4)
+cell_type_markers <- FindAllMarkers(a, only.pos = TRUE, logfc.threshold = 0.4, min.pct = 0.10, min.cells.group = 10)
 write.csv(cell_type_markers, "~/Gw7.5_forebrain_celltypes.csv")
 
 
